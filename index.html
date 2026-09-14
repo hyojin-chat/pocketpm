@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pocket PM — 여러 AI와 나눈 대화를 그대로 이어서 씁니다</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #E9E4D8;
+    --paper-deep: #DFD9C9;
+    --ink: #23283A;
+    --ink-soft: #4A5066;
+    --moss: #46603F;
+    --moss-bg: #DCE2D2;
+    --clay: #B24A26;
+    --line: #C7BFAC;
+  }
+
+  *{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+  body{
+    margin:0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Source Sans 3', -apple-system, sans-serif;
+    line-height: 1.6;
+    font-size: 17px;
+  }
+  h1,h2,h3{
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 500;
+    line-height: 1.18;
+    margin: 0;
+    color: var(--ink);
+  }
+  a{ color: inherit; }
+  .wrap{
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+  .measure{ max-width: 62ch; }
+
+  /* Nav */
+  nav.wrap{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding-top: 28px;
+    padding-bottom: 28px;
+  }
+  .wordmark{
+    font-family:'Fraunces', serif;
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+  }
+  .nav-cta{
+    border: 1px solid var(--ink);
+    padding: 9px 18px;
+    border-radius: 3px;
+    font-size: 14.5px;
+    font-weight: 500;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .nav-cta:hover{ background: var(--ink); color: var(--paper); }
+
+  /* Hero */
+  .hero{
+    padding: 48px 0 84px;
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 56px;
+    align-items: center;
+  }
+  .hero h1{
+    font-size: clamp(32px, 4.4vw, 48px);
+    letter-spacing: -0.01em;
+  }
+  .hero .sub{
+    margin-top: 22px;
+    font-size: 18px;
+    color: var(--ink-soft);
+    max-width: 46ch;
+  }
+  .hero-actions{
+    margin-top: 32px;
+    display:flex;
+    align-items:center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .cta-primary{
+    background: var(--clay);
+    color: #FBF6EE;
+    text-decoration: none;
+    padding: 13px 24px;
+    border-radius: 3px;
+    font-weight: 600;
+    font-size: 15.5px;
+    display:inline-block;
+  }
+  .cta-primary:hover{ background:#98401F; }
+  .hero-note{
+    font-size: 14px;
+    color: var(--ink-soft);
+  }
+
+  /* Hero illustration */
+  .diagram{ position:relative; }
+  .diagram svg{ width:100%; height:auto; display:block; }
+  .diagram-bubble{
+    animation: settle 0.6s ease-out both;
+  }
+  .diagram-bubble:nth-child(2){ animation-delay: .08s; }
+  .diagram-bubble:nth-child(3){ animation-delay: .16s; }
+  .diagram-bubble:nth-child(4){ animation-delay: .24s; }
+  @keyframes settle{
+    from{ opacity:0; transform: translateY(8px); }
+    to{ opacity:1; transform: translateY(0); }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .diagram-bubble{ animation: none; }
+  }
+
+  /* Problem */
+  .problem{
+    padding: 8px 0 72px;
+    border-top: 1px solid var(--line);
+  }
+  .problem-inner{
+    padding-top: 56px;
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+  }
+  .problem h2{ font-size: 27px; }
+  .problem p{ color: var(--ink-soft); margin-top: 16px; }
+
+  /* Steps */
+  .steps{
+    padding: 72px 0;
+    border-top: 1px solid var(--line);
+  }
+  .steps h2{ font-size: 27px; margin-bottom: 44px; }
+  .step-list{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+  }
+  .step{
+    border-left: 1px solid var(--ink);
+    padding-left: 18px;
+  }
+  .step .num{
+    font-family:'Fraunces', serif;
+    font-size: 15px;
+    color: var(--ink-soft);
+    display:block;
+    margin-bottom: 10px;
+  }
+  .step h3{ font-size: 19px; margin-bottom: 8px; font-weight: 500; }
+  .step p{ color: var(--ink-soft); font-size: 15.5px; margin:0; }
+  .step-extra{ margin-top: 44px; max-width: 62ch; }
+
+  /* Privacy band */
+  .privacy{
+    background: var(--moss-bg);
+    padding: 64px 0;
+    margin: 8px 0;
+  }
+  .privacy-inner{
+    display:grid;
+    grid-template-columns: 0.9fr 1.1fr;
+    gap: 48px;
+    align-items:center;
+  }
+  .privacy h2{ font-size: 26px; color: var(--moss); }
+  .privacy p{ color: #38492F; margin-top: 14px; }
+  .privacy-list{
+    list-style:none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 14px;
+  }
+  .privacy-list li{
+    padding-left: 20px;
+    position: relative;
+    color: var(--ink);
+    font-size: 15.5px;
+  }
+  .privacy-list li::before{
+    content: "";
+    position:absolute;
+    left:0; top: 9px;
+    width: 7px; height: 7px;
+    background: var(--moss);
+    border-radius: 50%;
+  }
+
+  /* Proof */
+  .proof{
+    padding: 72px 0;
+    border-top: 1px solid var(--line);
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: start;
+  }
+  .proof h2{ font-size: 25px; }
+  .proof-figure{
+    font-family:'Fraunces', serif;
+    font-size: 46px;
+    color: var(--clay);
+  }
+  .proof-figure span{ color: var(--ink-soft); font-size: 20px; font-family:'Source Sans 3', sans-serif; }
+  .proof p{ color: var(--ink-soft); margin-top: 14px; max-width: 48ch; }
+
+  /* Final CTA */
+  .final{
+    padding: 76px 0 88px;
+    border-top: 1px solid var(--line);
+    text-align:left;
+  }
+  .final h2{ font-size: 30px; max-width: 20ch; }
+  .final .hero-actions{ margin-top: 28px; }
+
+  footer{
+    border-top: 1px solid var(--line);
+    padding: 28px 0 40px;
+    font-size: 13.5px;
+    color: var(--ink-soft);
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap: 10px;
+  }
+
+  @media (max-width: 760px){
+    .hero{ grid-template-columns: 1fr; padding-top: 24px; }
+    .problem-inner, .privacy-inner, .proof{ grid-template-columns: 1fr; }
+    .step-list{ grid-template-columns: 1fr; }
+    .diagram{ order: -1; max-width: 320px; margin: 0 auto; }
+  }
+
+  a:focus-visible, .nav-cta:focus-visible, .cta-primary:focus-visible{
+    outline: 2px solid var(--clay);
+    outline-offset: 2px;
+  }
+</style>
+</head>
+<body>
+
+<nav class="wrap">
+  <div class="wordmark">Pocket PM</div>
+  <a class="nav-cta" href="https://chromewebstore.google.com/detail/mhknenefecbpbbkjcmnpojmobiglbehi?utm_source=item-share-cb">Chrome에 추가</a>
+</nav>
+
+<header class="hero wrap">
+  <div>
+    <h1>ChatGPT에서 나눈 대화, Claude에서도 처음부터 다시 설명하지 마세요.</h1>
+    <p class="sub">Pocket PM은 지금까지의 대화를 인계서 한 장으로 정리해, 다른 AI로 넘어가도 맥락이 끊기지 않게 해주는 크롬 확장 프로그램입니다.</p>
+    <div class="hero-actions">
+      <a class="cta-primary" href="https://chromewebstore.google.com/detail/mhknenefecbpbbkjcmnpojmobiglbehi?utm_source=item-share-cb">Chrome 웹스토어에서 설치</a>
+      <span class="hero-note">API 키 없음 · Pocket PM 서버 없음 · 무료</span>
+    </div>
+  </div>
+  <div class="diagram">
+    <svg viewBox="0 0 360 320" xmlns="http://www.w3.org/2000/svg">
+      <g class="diagram-bubble">
+        <rect x="16" y="24" width="150" height="52" rx="4" fill="none" stroke="#23283A" stroke-width="1.4"/>
+        <text x="32" y="55" font-family="Source Sans 3, sans-serif" font-size="15" fill="#23283A">ChatGPT 대화</text>
+      </g>
+      <g class="diagram-bubble">
+        <rect x="16" y="98" width="150" height="52" rx="4" fill="none" stroke="#23283A" stroke-width="1.4"/>
+        <text x="32" y="129" font-family="Source Sans 3, sans-serif" font-size="15" fill="#23283A">Claude 대화</text>
+      </g>
+      <g class="diagram-bubble">
+        <rect x="16" y="172" width="150" height="52" rx="4" fill="none" stroke="#23283A" stroke-width="1.4"/>
+        <text x="32" y="203" font-family="Source Sans 3, sans-serif" font-size="15" fill="#23283A">Gemini 대화</text>
+      </g>
+      <path d="M166 50 L 248 130" stroke="#B24A26" stroke-width="1.4" fill="none"/>
+      <path d="M166 124 L 248 140" stroke="#B24A26" stroke-width="1.4" fill="none"/>
+      <path d="M166 198 L 248 150" stroke="#B24A26" stroke-width="1.4" fill="none"/>
+      <g class="diagram-bubble">
+        <rect x="248" y="106" width="96" height="68" rx="4" fill="#23283A"/>
+        <text x="266" y="134" font-family="Source Sans 3, sans-serif" font-size="14" fill="#E9E4D8">인계서</text>
+        <text x="266" y="154" font-family="Source Sans 3, sans-serif" font-size="14" fill="#E9E4D8">.md</text>
+      </g>
+    </svg>
+  </div>
+</header>
+
+<section class="problem wrap">
+  <div class="problem-inner">
+    <div>
+      <h2>AI를 여러 개 쓰다 보면, 매번 처음부터 다시 설명하게 됩니다.</h2>
+      <p>프로젝트 배경, 그동안의 결정, 지금 막힌 부분 — 다른 AI로 넘어갈 때마다 같은 내용을 다시 타이핑하고 있진 않으셨나요.</p>
+    </div>
+    <div>
+      <h2>Pocket PM은 대화를 읽고, 지금 유효한 상태만 정리합니다.</h2>
+      <p>잡담과 지나간 논의는 걸러내고, 목표·확정된 결정·현재 진행 중인 작업만 인계서로 뽑아냅니다. 다음 AI는 그 인계서 한 장으로 바로 이어받습니다.</p>
+    </div>
+  </div>
+</section>
+
+<section class="steps wrap">
+  <h2>쓰는 방식</h2>
+  <div class="step-list">
+    <div class="step">
+      <span class="num">1</span>
+      <h3>대화 캡처</h3>
+      <p>ChatGPT, Claude, Gemini 탭에서 나눈 대화를 확장 프로그램이 자동으로 인식합니다.</p>
+    </div>
+    <div class="step">
+      <span class="num">2</span>
+      <h3>다른 AI로 전달</h3>
+      <p>이어갈 AI(ChatGPT·Claude)를 고르면 새 채팅을 열고, 대화 파일과 인계서 작성 요청을 자동으로 넣어 보냅니다.</p>
+    </div>
+    <div class="step">
+      <span class="num">3</span>
+      <h3>인계서로 이어가기</h3>
+      <p>그 AI가 목표·확정된 결정·현재 진행 상태만 골라 인계서 한 장으로 정리하고, 처음 설명 없이 바로 이어서 작업합니다.</p>
+    </div>
+  </div>
+  <div class="step step-extra">
+    <span class="num">+</span>
+    <h3>3 AI 의견 종합</h3>
+    <p>같은 질문을 ChatGPT·Claude·Gemini에 동시에 보내고, 세 답변을 공통 의견·차이점·충돌 지점으로 정리해 줍니다.</p>
+  </div>
+</section>
+
+<section class="privacy">
+  <div class="privacy-inner wrap">
+    <div>
+      <h2>대화 내용은 Pocket PM 서버로 가지 않습니다.</h2>
+      <p>Pocket PM은 로컬퍼스트로 동작합니다. 어떤 AI API도 대신 호출하지 않고, 계정에 있는 AI 서비스를 그대로 사용합니다.</p>
+    </div>
+    <ul class="privacy-list">
+      <li>API 키 입력 없음 — 이미 로그인한 ChatGPT·Claude·Gemini를 그대로 사용</li>
+      <li>Pocket PM 서버 없음 — 대화 파일은 내 PC와, 내가 고른 AI에만 전달</li>
+      <li>대화는 Downloads 폴더에 Markdown 파일로 저장 — 내 파일로 계속 보관</li>
+    </ul>
+  </div>
+</section>
+
+<section class="proof wrap">
+  <div>
+    <h2>홍보 없이, 쓰던 사람이 다시 데려왔습니다.</h2>
+    <p>따로 광고를 돌리지 않은 상태에서 Chrome 웹스토어 검색과 업데이트만으로 사용자가 늘었습니다. 큰 숫자는 아니지만, 실제로 써보고 남은 사람들입니다.</p>
+  </div>
+  <div>
+    <div class="proof-figure">4 → 8<span> 명</span></div>
+    <p>같은 기간 별도 프로모션 없이 자연 유입만으로 늘어난 사용자 수입니다.</p>
+  </div>
+</section>
+
+<section class="final wrap">
+  <h2>지금 쓰던 AI에서, 인계서 한 장만 만들어 보세요.</h2>
+  <div class="hero-actions">
+    <a class="cta-primary" href="https://chromewebstore.google.com/detail/mhknenefecbpbbkjcmnpojmobiglbehi?utm_source=item-share-cb">Chrome 웹스토어에서 설치</a>
+    <span class="hero-note">설치 후 바로 사용 가능</span>
+  </div>
+</section>
+
+<footer class="wrap">
+  <span>Pocket PM</span>
+  <span>개인이 만들고 있는 크롬 확장 프로그램입니다</span>
+</footer>
+
+</body>
+</html>

@@ -296,9 +296,13 @@
   .go a.primary{ background:var(--clay); border-color:var(--clay); color:#1B1F24; }
   .go a.primary:hover{ background:#F2906E; }
 
-  .sec .ask{ margin-top:2px; }
-  .tally{ margin-top:6px; }
-  .tally iframe{ display:block; width:100%; border:0; }
+  .chips{ display:flex; gap:9px; flex-wrap:wrap; margin-top:20px; }
+  .chips button{ font:inherit; font-size:14.5px; font-weight:600; color:var(--ink); background:#FFF;
+                 border:1px solid var(--line); border-radius:999px; padding:10px 17px; cursor:pointer; }
+  .chips button:hover{ border-color:var(--ink); }
+  .chips button[disabled]{ opacity:0.4; cursor:default; }
+  .chips button[data-picked]{ opacity:1; border-color:var(--clay); color:var(--clay); }
+  .said{ margin-top:16px; color:var(--clay); font-weight:700; font-size:15px; display:none; }
 
   .end{ margin-top:34px; text-align:center; }
   .end p{ margin:0; font-size:17px; font-weight:600; }
@@ -360,12 +364,16 @@
 
     <section class="sec">
       <div class="kicker"><span class="step">3</span>마지막으로 하나만</div>
-      <p class="ask">어디서 오셨는지 알면, 다음 업데이트를 어디에 먼저 알려드릴지 정하는 데 도움이 돼요.</p>
-      <div class="tally">
-        <iframe data-tally-src="https://tally.so/embed/Y587D0?alignLeft=1&amp;hideTitle=1&amp;transparentBackground=1&amp;dynamicHeight=1"
-                loading="lazy" width="100%" height="470" frameborder="0" marginheight="0" marginwidth="0"
-                title="Pocket PM, 어떻게 알게 되셨어요?"></iframe>
+      <h2>Pocket PM, 어떻게 알게 되셨어요?</h2>
+      <p>어디서 오셨는지 알면, 다음 업데이트를 어디에 먼저 알려드릴지 정하는 데 도움이 돼요.</p>
+      <div class="chips">
+        <button data-heard="geeknews">긱뉴스</button>
+        <button data-heard="kakao">카톡 오픈채팅방</button>
+        <button data-heard="youtube">유튜브</button>
+        <button data-heard="store-search">웹스토어 검색</button>
+        <button data-heard="word-of-mouth">지인 추천</button>
       </div>
+      <p class="said">고맙습니다. 잘 받았어요.</p>
     </section>
   </div>
 
@@ -379,7 +387,7 @@
 </main>
 
 <footer class="wrap">
-  <span>Pocket PM · 이 페이지는 쿠키 없이 익명 방문 수만 셉니다. 설문 답변은 <a href="https://tally.so" target="_blank" rel="noopener">Tally</a>에 저장됩니다.</span>
+  <span>Pocket PM · 이 페이지는 쿠키 없이 익명 방문 수만 셉니다</span>
 </footer>
 
 <script data-goatcounter="https://pocketpm.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
@@ -393,20 +401,24 @@
       window.goatcounter.count({ path: "install-complete/" + source, title: "설치 완료", event: true });
     }
   });
-  // Hand the remembered channel to the Tally form as a hidden field, then load it.
-  (function () {
-    var frame = document.querySelector(".tally iframe");
-    var source = "none";
-    try { source = localStorage.getItem("pocketpm_source") || "none"; } catch (e) {}
-    frame.setAttribute(
-      "data-tally-src",
-      frame.getAttribute("data-tally-src") + "&source=" + encodeURIComponent(source) + "&ver=" + VERSION
-    );
-    var s = document.createElement("script");
-    s.src = "https://tally.so/widgets/embed.js";
-    s.async = true;
-    document.body.appendChild(s);
-  })();
+  // Record the answer together with the channel the landing remembered, so
+  // "said geeknews / actually came from linkedin" can be read off one line.
+  document.querySelectorAll(".chips button").forEach(function (button) {
+    button.addEventListener("click", function () {
+      var source = "none";
+      try { source = localStorage.getItem("pocketpm_source") || "none"; } catch (error) {}
+      if (window.goatcounter && window.goatcounter.count) {
+        window.goatcounter.count({
+          path: "heard-from/" + button.dataset.heard + "/" + source,
+          title: "알게 된 경로",
+          event: true
+        });
+      }
+      button.setAttribute("data-picked", "1");
+      document.querySelector(".said").style.display = "block";
+      document.querySelectorAll(".chips button").forEach(function (other) { other.disabled = true; });
+    });
+  });
 </script>
 </body>
 </html>

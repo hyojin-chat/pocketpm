@@ -367,6 +367,17 @@
   <span>기타 문의사항은 <a href="mailto:chulr999@gmail.com">chulr999@gmail.com</a>으로 메일 주세요.</span>
 </footer>
 
+<script>
+  // Remember which channel this visit came from. The welcome page, shown
+  // once after install, reads it back and counts the install against it.
+  (function () {
+    try {
+      var source = new URLSearchParams(location.search).get("utm_source");
+      if (source) localStorage.setItem("pocketpm_source", source.slice(0, 40));
+    } catch (error) {}
+  })();
+</script>
+
 <script data-goatcounter="https://pocketpm.goatcounter.com/count"
         async src="https://gc.zgo.at/count.js"></script>
 

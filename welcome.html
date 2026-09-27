@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pocket PM 설치 완료</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+  :root{
+    --paper: #E8EFF4;
+    --paper-deep: #DCE5EC;
+    --ink: #1B1F24;
+    --ink-soft: #5A6470;
+    --moss: #1B1F24;
+    --moss-bg: #F1E8DE;
+    --clay: #EB7953;
+    --line: #CBD5DE;
+    --font: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+  }
+
+  *{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+  body{
+    margin:0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font);
+    line-height: 1.6;
+    font-size: 17px;
+  }
+  h1,h2,h3{
+    font-family: var(--font);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.18;
+    margin: 0;
+    color: var(--ink);
+  }
+  a{ color: inherit; }
+  .wrap{
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+  .measure{ max-width: 62ch; }
+
+  /* Nav */
+  nav.wrap{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding-top: 28px;
+    padding-bottom: 28px;
+  }
+  .wordmark{
+    display:flex;
+    align-items:center;
+    gap: 10px;
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+  }
+  .wordmark img{ display:block; border-radius: 7px; }
+  .nav-cta{
+    border: 1px solid var(--ink);
+    padding: 9px 18px;
+    border-radius: 3px;
+    font-size: 14.5px;
+    font-weight: 500;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .nav-cta:hover{ background: var(--ink); color: var(--paper); }
+
+  /* Hero */
+  .hero{
+    padding: 48px 0 84px;
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 56px;
+    align-items: center;
+  }
+  .hero h1{
+    font-size: clamp(32px, 4.4vw, 48px);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+  }
+  .hero .sub{
+    margin-top: 22px;
+    font-size: 18px;
+    color: var(--ink-soft);
+    max-width: 46ch;
+  }
+  .hero-actions{
+    margin-top: 32px;
+    display:flex;
+    align-items:center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .cta-primary{
+    background: var(--clay);
+    color: #1B1F24;
+    text-decoration: none;
+    padding: 13px 24px;
+    border-radius: 3px;
+    font-weight: 700;
+    font-size: 15.5px;
+    display:inline-block;
+  }
+  .cta-primary:hover{ background:#F2906E; }
+  .hero-note{
+    font-size: 14px;
+    color: var(--ink-soft);
+  }
+
+  /* Hero illustration */
+  .diagram{ position:relative; }
+  .diagram svg{ width:100%; height:auto; display:block; }
+  .diagram-bubble{
+    animation: settle 0.6s ease-out both;
+  }
+  .diagram-bubble:nth-child(2){ animation-delay: .08s; }
+  .diagram-bubble:nth-child(3){ animation-delay: .16s; }
+  .diagram-bubble:nth-child(4){ animation-delay: .24s; }
+  @keyframes settle{
+    from{ opacity:0; transform: translateY(8px); }
+    to{ opacity:1; transform: translateY(0); }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .diagram-bubble{ animation: none; }
+  }
+
+  /* Problem */
+  .problem{
+    padding: 8px 0 72px;
+    border-top: 1px solid var(--line);
+  }
+  .problem-inner{
+    padding-top: 56px;
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+  }
+  .problem h2{ font-size: 27px; }
+  .problem p{ color: var(--ink-soft); margin-top: 16px; }
+
+  /* Steps */
+  .steps{
+    padding: 72px 0;
+    border-top: 1px solid var(--line);
+  }
+  .steps h2{ font-size: 27px; margin-bottom: 44px; }
+  .step-list{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+  }
+  .step{
+    border-left: 1px solid #AEBBC7;
+    padding-left: 18px;
+  }
+  .step .num{
+    font-size: 15px;
+    font-weight: 700;
+    color: #C65A36;
+    display:block;
+    margin-bottom: 10px;
+  }
+  .step h3{ font-size: 19px; margin-bottom: 8px; font-weight: 700; }
+  .step p{ color: var(--ink-soft); font-size: 15.5px; margin:0; }
+  .step-extra{ margin-top: 44px; max-width: 62ch; }
+  .shot{ margin: 40px 0 0; background: #FFFFFF; padding: 10px; border-radius: 16px; border: 1px solid var(--line); }
+  .shot img{ width: 100%; height: auto; display: block; border-radius: 10px; }
+
+  /* Privacy band */
+  .privacy{
+    background: var(--moss-bg);
+    padding: 64px 0;
+    margin: 8px 0;
+  }
+  .privacy-inner{
+    display:grid;
+    grid-template-columns: 0.9fr 1.1fr;
+    gap: 48px;
+    align-items:center;
+  }
+  .privacy h2{ font-size: 26px; color: var(--moss); }
+  .privacy p{ color: #5A5046; margin-top: 14px; }
+  .privacy-list{
+    list-style:none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 14px;
+  }
+  .privacy-list li{
+    padding-left: 20px;
+    position: relative;
+    color: var(--ink);
+    font-size: 15.5px;
+  }
+  .privacy-list li::before{
+    content: "";
+    position:absolute;
+    left:0; top: 9px;
+    width: 7px; height: 7px;
+    background: var(--clay);
+    border-radius: 50%;
+  }
+
+  /* Proof */
+  .proof{
+    padding: 72px 0;
+    border-top: 1px solid var(--line);
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: start;
+  }
+  .proof h2{ font-size: 25px; }
+  .proof-figure{
+    font-family:'Fraunces', serif;
+    font-size: 46px;
+    color: var(--clay);
+  }
+  .proof-figure span{ color: var(--ink-soft); font-size: 20px; font-family:'Source Sans 3', sans-serif; }
+  .proof p{ color: var(--ink-soft); margin-top: 14px; max-width: 48ch; }
+
+  /* Final CTA */
+  .final{
+    padding: 76px 0 88px;
+    border-top: 1px solid var(--line);
+    text-align:left;
+  }
+  .final h2{ font-size: 30px; max-width: 20ch; }
+  .final .hero-actions{ margin-top: 28px; }
+
+  footer{
+    border-top: 1px solid var(--line);
+    padding: 28px 0 40px;
+    font-size: 13.5px;
+    color: var(--ink-soft);
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap: 10px;
+  }
+
+  @media (max-width: 760px){
+    .hero{ grid-template-columns: 1fr; padding-top: 24px; }
+    .problem-inner, .privacy-inner, .proof{ grid-template-columns: 1fr; }
+    .step-list{ grid-template-columns: 1fr; }
+    .diagram{ order: -1; max-width: 320px; margin: 0 auto; }
+  }
+
+  a:focus-visible, .nav-cta:focus-visible, .cta-primary:focus-visible{
+    outline: 2px solid var(--clay);
+    outline-offset: 2px;
+  }
+
+  .welcome{ padding: 52px 0 28px; max-width: 720px; }
+  .welcome h1{ font-size: clamp(27px, 3.6vw, 38px); line-height: 1.24; }
+  .welcome .lead{ margin-top: 18px; font-size: 17px; color: var(--ink-soft); }
+  .card{ background:#FFFFFF; border:1px solid var(--line); border-radius:16px; margin-top:30px; overflow:hidden; }
+  .sec{ padding: 28px; }
+  .sec + .sec{ border-top:1px solid var(--line); }
+  .sec .kicker{ display:flex; align-items:center; gap:10px; font-size:15px; font-weight:700; color:var(--ink); }
+  .sec .kicker .step{ width:26px; height:26px; border-radius:50%; background:var(--clay); color:#1B1F24;
+                      font-size:14px; font-weight:800; display:flex; align-items:center; justify-content:center; flex:none; }
+  .sec h2{ font-size:20px; margin-top:10px; }
+  .sec p{ color:var(--ink-soft); font-size:15.5px; margin:10px 0 0; }
+  .sec .muted{ font-size:14px; margin-top:14px; }
+
+  .pins{ display:grid; grid-template-columns:1fr 18px 1fr 18px 1fr; align-items:start; gap:8px; margin-top:22px; }
+  .pins .arrow{ color:var(--ink-soft); text-align:center; padding-top:30px; font-size:15px; }
+  .pin figure{ margin:0; }
+  .pin .art{ background:var(--paper); border:1px solid var(--line); border-radius:10px; height:72px;
+             display:flex; align-items:center; justify-content:center; padding:10px; }
+  .pin figcaption{ margin-top:10px; font-size:13.5px; color:var(--ink-soft); line-height:1.45; }
+  .pin figcaption b{ color:var(--ink); font-weight:700; }
+  .bar{ background:#FFF; border:1px solid var(--line); border-radius:7px; height:34px; width:100%;
+        display:flex; align-items:center; gap:7px; padding:0 9px; }
+  .bar .dot{ width:7px; height:7px; border-radius:50%; background:var(--line); }
+  .bar .sp{ flex:1; }
+  .bar img{ width:18px; height:18px; border-radius:4px; display:block; }
+  .ring{ box-shadow:0 0 0 2px var(--clay); border-radius:6px; padding:1px; display:flex; }
+  .menu{ background:#FFF; border:1px solid var(--line); border-radius:7px; width:100%; padding:7px 9px;
+         display:flex; align-items:center; gap:8px; font-size:12.5px; }
+  .menu .sp{ flex:1; }
+
+  .go{ display:flex; gap:10px; flex-wrap:wrap; margin-top:20px; }
+  .go a{ border:1px solid var(--ink); border-radius:3px; padding:11px 18px; text-decoration:none;
+         font-size:14.5px; font-weight:600; }
+  .go a:hover{ background:var(--ink); color:var(--paper); }
+  .go a.primary{ background:var(--clay); border-color:var(--clay); color:#1B1F24; }
+  .go a.primary:hover{ background:#F2906E; }
+
+  .sec .ask{ margin-top:2px; }
+  .tally{ margin-top:6px; }
+  .tally iframe{ display:block; width:100%; border:0; }
+
+  .end{ margin-top:34px; text-align:center; }
+  .end p{ margin:0; font-size:17px; font-weight:600; }
+  .end .sub{ margin-top:10px; font-weight:400; font-size:15.5px; color:var(--ink-soft); }
+  .end .go{ justify-content:center; margin-top:18px; }
+
+  @media (max-width: 640px){
+    .pins{ grid-template-columns:1fr; }
+    .pins .arrow{ display:none; }
+  }
+
+</style>
+</head>
+<body>
+
+<nav class="wrap">
+  <div class="wordmark"><img src="assets/pocketpm-icon.png" width="28" height="28" alt="">Pocket PM</div>
+  <span class="hero-note">설치 완료</span>
+</nav>
+
+<main class="welcome wrap">
+  <h1>설치, 잘 됐어요.<br>이제 대화가 끊기지 않아요.</h1>
+  <p class="lead">아래 두 가지만 해두면 바로 쓸 준비가 끝나요. 1분도 안 걸려요.</p>
+
+  <div class="card">
+    <section class="sec">
+      <div class="kicker"><span class="step">1</span>툴바에 고정하기</div>
+      <h2>매번 찾지 않도록, 여기 고정해두세요</h2>
+      <p>고정해두지 않으면 확장 프로그램 서랍 안에 숨어버려서, 필요할 때 못 찾는 경우가 많아요.</p>
+      <div class="pins">
+        <div class="pin"><figure>
+          <div class="art"><div class="bar"><span class="sp"></span><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#5A6470" stroke-width="1.6" stroke-linejoin="round"><path d="M10 4.5a2 2 0 1 1 4 0V5h3a1 1 0 0 1 1 1v3h.5a2 2 0 1 1 0 4H18v3a1 1 0 0 1-1 1h-3v.5a2 2 0 1 1-4 0V17H7a1 1 0 0 1-1-1v-3h-.5a2 2 0 1 1 0-4H6V6a1 1 0 0 1 1-1h3v-.5z"/></svg><span class="dot"></span></div></div>
+          <figcaption><b>①</b> 주소창 옆 퍼즐 아이콘을 클릭하세요</figcaption>
+        </figure></div>
+        <div class="arrow">→</div>
+        <div class="pin"><figure>
+          <div class="art"><div class="menu"><img src="assets/pocketpm-icon.png" width="16" height="16" alt="" style="border-radius:4px">Pocket PM<span class="sp"></span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#EB7953" stroke-width="2" stroke-linecap="round"><path d="M9 4h6l-1 6 3 2v2H7v-2l3-2-1-6z"/><path d="M12 14v6"/></svg></div></div>
+          <figcaption><b>②</b> 목록에서 Pocket PM 옆 압정을 누르세요</figcaption>
+        </figure></div>
+        <div class="arrow">→</div>
+        <div class="pin"><figure>
+          <div class="art"><div class="bar"><span class="sp"></span><span class="ring"><img src="assets/pocketpm-icon.png" alt=""></span><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#5A6470" stroke-width="1.6" stroke-linejoin="round"><path d="M10 4.5a2 2 0 1 1 4 0V5h3a1 1 0 0 1 1 1v3h.5a2 2 0 1 1 0 4H18v3a1 1 0 0 1-1 1h-3v.5a2 2 0 1 1-4 0V17H7a1 1 0 0 1-1-1v-3h-.5a2 2 0 1 1 0-4H6V6a1 1 0 0 1 1-1h3v-.5z"/></svg></div></div>
+          <figcaption><b>③</b> 이제 툴바에 바로 보여요</figcaption>
+        </figure></div>
+      </div>
+    </section>
+
+    <section class="sec">
+      <div class="kicker"><span class="step">2</span>바로 체험하기</div>
+      <h2>지금 나누던 대화, 한 번 이어서 보내보세요</h2>
+      <p>버튼을 누르면 새 탭으로 열려요. 아무 대화나 열어두고 Pocket PM 아이콘을 눌러보세요.</p>
+      <div class="go">
+        <a href="https://chatgpt.com/" target="_blank" rel="noopener" data-goatcounter-click="welcome-open-chatgpt">ChatGPT 열어보기</a>
+        <a href="https://claude.ai/" target="_blank" rel="noopener" data-goatcounter-click="welcome-open-claude">Claude 열어보기</a>
+        <a href="https://gemini.google.com/" target="_blank" rel="noopener" data-goatcounter-click="welcome-open-gemini">Gemini 열어보기</a>
+      </div>
+      <p class="muted">이미 써보셨다면 이 단계는 건너뛰어도 돼요.</p>
+    </section>
+
+    <section class="sec">
+      <div class="kicker"><span class="step">3</span>마지막으로 하나만</div>
+      <p class="ask">어디서 오셨는지 알면, 다음 업데이트를 어디에 먼저 알려드릴지 정하는 데 도움이 돼요.</p>
+      <div class="tally">
+        <iframe data-tally-src="https://tally.so/embed/Y587D0?alignLeft=1&amp;hideTitle=1&amp;transparentBackground=1&amp;dynamicHeight=1"
+                loading="lazy" width="100%" height="470" frameborder="0" marginheight="0" marginwidth="0"
+                title="Pocket PM, 어떻게 알게 되셨어요?"></iframe>
+      </div>
+    </section>
+  </div>
+
+  <div class="end">
+    <p>설치해 주셔서 고맙습니다 ❤️❤️❤️</p>
+    <p class="sub">써보시고 리뷰 꼭 부탁드려요!</p>
+    <div class="go">
+      <a class="primary" href="https://chromewebstore.google.com/detail/pocket-pm/mhknenefecbpbbkjcmnpojmobiglbehi/reviews?hl=ko" target="_blank" rel="noopener" data-goatcounter-click="welcome-review">리뷰 남기러 가기</a>
+    </div>
+  </div>
+</main>
+
+<footer class="wrap">
+  <span>Pocket PM · 이 페이지는 쿠키 없이 익명 방문 수만 셉니다. 설문 답변은 <a href="https://tally.so" target="_blank" rel="noopener">Tally</a>에 저장됩니다.</span>
+</footer>
+
+<script data-goatcounter="https://pocketpm.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+<script>
+  var VERSION = "0.7.3";
+  // Count the install against the channel the landing page remembered.
+  window.addEventListener("load", function () {
+    var source = "none";
+    try { source = localStorage.getItem("pocketpm_source") || "none"; } catch (e) {}
+    if (window.goatcounter && window.goatcounter.count) {
+      window.goatcounter.count({ path: "install-complete/" + source, title: "설치 완료", event: true });
+    }
+  });
+  // Hand the remembered channel to the Tally form as a hidden field, then load it.
+  (function () {
+    var frame = document.querySelector(".tally iframe");
+    var source = "none";
+    try { source = localStorage.getItem("pocketpm_source") || "none"; } catch (e) {}
+    frame.setAttribute(
+      "data-tally-src",
+      frame.getAttribute("data-tally-src") + "&source=" + encodeURIComponent(source) + "&ver=" + VERSION
+    );
+    var s = document.createElement("script");
+    s.src = "https://tally.so/widgets/embed.js";
+    s.async = true;
+    document.body.appendChild(s);
+  })();
+</script>
+</body>
+</html>

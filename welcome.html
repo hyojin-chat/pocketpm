@@ -303,6 +303,14 @@
   .chips button[disabled]{ opacity:0.4; cursor:default; }
   .chips button[data-picked]{ opacity:1; border-color:var(--clay); color:var(--clay); }
   .said{ margin-top:16px; color:var(--clay); font-weight:700; font-size:15px; display:none; }
+  .etc{ display:none; gap:9px; margin-top:12px; flex-wrap:wrap; }
+  .etc.on{ display:flex; }
+  .etc input{ font:inherit; font-size:15px; color:var(--ink); background:#FFF; border:1px solid var(--line);
+              border-radius:999px; padding:10px 18px; flex:1; min-width:220px; }
+  .etc input:focus{ outline:none; border-color:var(--clay); }
+  .etc button{ font:inherit; font-size:14.5px; font-weight:700; color:#1B1F24; background:var(--clay);
+               border:1px solid var(--clay); border-radius:999px; padding:10px 20px; cursor:pointer; }
+  .etc button:hover{ background:#F2906E; }
 
   .end{ margin-top:34px; text-align:center; }
   .end p{ margin:0; font-size:17px; font-weight:600; }
@@ -372,6 +380,11 @@
         <button data-heard="youtube">유튜브</button>
         <button data-heard="store-search">웹스토어 검색</button>
         <button data-heard="word-of-mouth">지인 추천</button>
+        <button data-heard="etc">기타</button>
+      </div>
+      <div class="etc">
+        <input type="text" maxlength="40" placeholder="어디서 보셨는지 적어주세요" aria-label="기타 경로">
+        <button type="button" class="etc-send">보내기</button>
       </div>
       <p class="said">고맙습니다. 잘 받았어요.</p>
     </section>
@@ -387,7 +400,7 @@
 </main>
 
 <footer class="wrap">
-  <span>Pocket PM · 이 페이지는 쿠키 없이 익명 방문 수만 셉니다</span>
+  <span>Pocket PM · 쿠키 없이 익명 방문 수를 세고, 위에서 골라주신 답변만 함께 기록합니다</span>
 </footer>
 
 <script data-goatcounter="https://pocketpm.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
@@ -403,21 +416,53 @@
   });
   // Record the answer together with the channel the landing remembered, so
   // "said geeknews / actually came from linkedin" can be read off one line.
+  var etcRow = document.querySelector(".etc");
+  var etcInput = etcRow.querySelector("input");
+
+  function channel() {
+    try {
+      return localStorage.getItem("pocketpm_source") || "none";
+    } catch (error) {
+      return "none";
+    }
+  }
+
+  function record(answer, button) {
+    if (window.goatcounter && window.goatcounter.count) {
+      window.goatcounter.count({
+        path: "heard-from/" + answer + "/" + channel(),
+        title: "알게 된 경로",
+        event: true
+      });
+    }
+    if (button) button.setAttribute("data-picked", "1");
+    etcRow.classList.remove("on");
+    document.querySelector(".said").style.display = "block";
+    document.querySelectorAll(".chips button").forEach(function (other) { other.disabled = true; });
+  }
+
   document.querySelectorAll(".chips button").forEach(function (button) {
     button.addEventListener("click", function () {
-      var source = "none";
-      try { source = localStorage.getItem("pocketpm_source") || "none"; } catch (error) {}
-      if (window.goatcounter && window.goatcounter.count) {
-        window.goatcounter.count({
-          path: "heard-from/" + button.dataset.heard + "/" + source,
-          title: "알게 된 경로",
-          event: true
-        });
+      if (button.dataset.heard === "etc") {
+        // Ask what to write down instead of recording "etc" on its own.
+        etcRow.classList.add("on");
+        etcInput.focus();
+        return;
       }
-      button.setAttribute("data-picked", "1");
-      document.querySelector(".said").style.display = "block";
-      document.querySelectorAll(".chips button").forEach(function (other) { other.disabled = true; });
+      record(button.dataset.heard, button);
     });
+  });
+
+  function sendEtc() {
+    // Slashes would fake a deeper path, so they are flattened; long answers
+    // are cut to keep the recorded name readable.
+    var typed = etcInput.value.replace(/[/]+/g, " ").trim().slice(0, 40);
+    record("etc/" + (typed || "(빈칸)"), document.querySelector('.chips button[data-heard="etc"]'));
+  }
+
+  etcRow.querySelector(".etc-send").addEventListener("click", sendEtc);
+  etcInput.addEventListener("keydown", function (event) {
+    if (event.key === "Enter") sendEtc();
   });
 </script>
 </body>

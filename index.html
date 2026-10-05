@@ -408,11 +408,24 @@
 <script>
   // Remember which channel this visit came from. The welcome page, shown
   // once after install, reads it back and counts the install against it.
+  // The install buttons carry the same channel on to the Web Store, whose
+  // dashboard otherwise files every visitor we send under item-share-cb —
+  // the label Chrome's own share button uses — and cannot tell them apart.
   (function () {
+    var params = new URLSearchParams(location.search);
+    var source = params.get("utm_source");
+    var campaign = params.get("utm_campaign");
     try {
-      var source = new URLSearchParams(location.search).get("utm_source");
       if (source) localStorage.setItem("pocketpm_source", source.slice(0, 40));
     } catch (error) {}
+    document
+      .querySelectorAll('a[href*="chromewebstore.google.com"]')
+      .forEach(function (link) {
+        var url = new URL(link.href);
+        url.searchParams.set("utm_source", "landing-" + (source || "direct"));
+        if (campaign) url.searchParams.set("utm_campaign", campaign);
+        link.href = url.toString();
+      });
   })();
 </script>
 

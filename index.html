@@ -425,7 +425,9 @@
         url.searchParams.set("utm_source", "landing-" + (source || "direct"));
         if (campaign) url.searchParams.set("utm_campaign", campaign);
         link.href = url.toString();
-      });
+        var base = link.getAttribute("data-goatcounter-click");
+        if (base) link.setAttribute("data-goatcounter-click", base + "/" + (source || "direct"));
+        });
   })();
 </script>
 

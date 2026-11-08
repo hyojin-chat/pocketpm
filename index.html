@@ -431,6 +431,14 @@
   })();
 </script>
 
+<script>
+  window.goatcounter = {
+    referrer: function () {
+      return goatcounter.get_query('utm_source') || document.referrer;
+    }
+  };
+</script>
+  
 <script data-goatcounter="https://pocketpm.goatcounter.com/count"
         async src="https://gc.zgo.at/count.js"></script>
 

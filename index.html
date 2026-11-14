@@ -133,12 +133,19 @@
     font: inherit;
     font-weight: 700;
     padding: 10px 16px;
-    border: 1px solid var(--ink);
+    border: 0;
     border-radius: 3px;
-    background: transparent;
+    background: var(--clay);
     color: var(--ink);
     cursor: pointer;
   }
+  .mobile-tip button:hover{ background: #F2906E; }
+  .is-phone .cta-primary{
+    background: transparent;
+    border: 1px solid var(--ink);
+    padding: 12px 23px;
+  }
+  .is-phone .cta-primary:hover{ background: var(--ink); color: var(--paper); }
   .hero-note{
     font-size: 14px;
     color: var(--ink-soft);

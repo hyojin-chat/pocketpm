@@ -146,6 +146,15 @@
     padding: 12px 23px;
   }
   .is-phone .cta-primary:hover{ background: var(--ink); color: var(--paper); }
+  /* On a phone, show only the logo, one line about the product, the notice and
+     the install button, so the notice is not lost among the rest of the page. */
+  .is-phone .hero h1,
+  .is-phone .hero .diagram,
+  .is-phone header.hero ~ *{ display: none; }
+  .is-phone .hero{ padding: 8px 0 40px; }
+  .is-phone .hero .sub{ margin: 0 0 18px; font-size: 15px; }
+  .is-phone .mobile-tip{ margin-top: 0; }
+  .is-phone .hero-actions{ margin-top: 22px; }
   .hero-note{
     font-size: 14px;
     color: var(--ink-soft);
@@ -453,28 +462,46 @@
 </script>
 
 <script>
-  // Remember which channel this visit came from. The welcome page, shown
-  // once after install, reads it back and counts the install against it.
-  // The install buttons carry the same channel on to the Web Store, whose
-  // dashboard otherwise files every visitor we send under item-share-cb —
-  // the label Chrome's own share button uses — and cannot tell them apart.
+  // Remember which channel this visit came from, in one tidy spelling
+  // (lowercase, a-z 0-9 - _), so GoatCounter lists every channel the same way.
+  // The welcome page, shown once after install, reads it back and counts the
+  // install against it. The install buttons carry the channel on to the Web
+  // Store, whose dashboard otherwise files every visitor under item-share-cb.
   (function () {
+    window.ppmClean = function (value) {
+      return String(value || "")
+        .toLowerCase()
+        .replace(/[^a-z0-9_-]+/g, "-")
+        .replace(/^-+|-+$/g, "")
+        .slice(0, 40);
+    };
     var params = new URLSearchParams(location.search);
-    var source = params.get("utm_source");
-    var campaign = params.get("utm_campaign");
+    var source = window.ppmClean(params.get("utm_source"));
+    var campaign = window.ppmClean(params.get("utm_campaign"));
+    var label = source || "direct";
     try {
-      if (source) localStorage.setItem("pocketpm_source", source.slice(0, 40));
+      if (source) localStorage.setItem("pocketpm_source", source);
     } catch (error) {}
     document
       .querySelectorAll('a[href*="chromewebstore.google.com"]')
       .forEach(function (link) {
         var url = new URL(link.href);
-        url.searchParams.set("utm_source", "landing-" + (source || "direct"));
+        url.searchParams.set("utm_source", "landing-" + label);
         if (campaign) url.searchParams.set("utm_campaign", campaign);
         link.href = url.toString();
         var base = link.getAttribute("data-goatcounter-click");
-        if (base) link.setAttribute("data-goatcounter-click", base + "/" + (source || "direct"));
+        if (base) link.setAttribute("data-goatcounter-click", base + "/" + label);
+      });
+    // One landing-visit event per load, for every channel: visit/<channel>/<campaign>.
+    window.addEventListener("load", function () {
+      if (window.goatcounter && window.goatcounter.count) {
+        window.goatcounter.count({
+          path: "visit/" + label + (campaign ? "/" + campaign : ""),
+          title: "랜딩 방문",
+          event: true
         });
+      }
+    });
   })();
 </script>
 
@@ -482,8 +509,19 @@
   // Phones can install the extension but not use it, so on a phone we say so
   // and offer to send the link to wherever the person reads on a computer.
   (function () {
-    var SHARE_URL = "https://hyojin-chat.github.io/pocketpm/?utm_source=insta&utm_campaign=phoneshare";
     var params = new URLSearchParams(location.search);
+    var fromUrl = window.ppmClean(params.get("utm_source"));
+    var label = fromUrl;
+    if (!label) {
+      try { label = window.ppmClean(localStorage.getItem("pocketpm_source")); } catch (error) {}
+    }
+    label = label || "direct";
+    // The link a phone sends itself keeps the channel it came from (you
+    // stays you-share, insta-bio stays insta-bio-share) and the campaign.
+    var origin = label.replace(/-share$/, "");
+    var campaign = window.ppmClean(params.get("utm_campaign")) || "phoneshare";
+    var SHARE_URL =
+      "https://hyojin-chat.github.io/pocketpm/?utm_source=" + origin + "-share&utm_campaign=" + campaign;
     var ua = navigator.userAgent || "";
     var phone =
       /Android|iPhone|iPad|iPod/i.test(ua) ||
@@ -496,10 +534,11 @@
       }
     }
 
-    // Arrivals through a link that someone sent themselves from a phone.
-    if (params.get("utm_campaign") === "phoneshare") {
+    // Arrivals through a link that someone sent themselves from a phone:
+    // share-opened/<pc|phone>/<channel>. "pc" is the one we hoped for.
+    if (/-share$/.test(fromUrl)) {
       window.addEventListener("load", function () {
-        count("landing-visit/phoneshare/" + (phone ? "phone" : "pc"), "폰에서 보낸 링크로 방문");
+        count("share-opened/" + (phone ? "phone" : "pc") + "/" + origin, "공유 링크로 다시 열림");
       });
     }
 
@@ -509,7 +548,7 @@
     if (!tip || !button) return;
     tip.classList.add("on");
     window.addEventListener("load", function () {
-      count("mobile-notice-seen", "폰 안내 노출");
+      count("mobile-notice-seen/" + label, "폰 안내 노출");
     });
 
     var words = {
@@ -530,17 +569,17 @@
     button.addEventListener("click", function () {
       var lang = document.documentElement.lang;
       var say = words[lang] || words.en;
-      count("mobile-share", "폰에서 나에게 보내기");
+      count("mobile-share/" + label, "폰에서 나에게 보내기");
 
       if (navigator.share) {
         navigator.share({ title: "Pocket PM", text: say.text, url: SHARE_URL }).catch(function () {});
         return;
       }
 
-      var label = button.textContent;
+      var buttonText = button.textContent;
       function copied() {
         button.textContent = say.copied;
-        setTimeout(function () { button.textContent = label; }, 2500);
+        setTimeout(function () { button.textContent = buttonText; }, 2500);
       }
       function manual() { window.prompt("", SHARE_URL); }
       if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -555,7 +594,7 @@
 <script>
   window.goatcounter = {
     referrer: function () {
-      return goatcounter.get_query('utm_source') || document.referrer;
+      return window.ppmClean(goatcounter.get_query('utm_source')) || document.referrer;
     }
   };
 </script>

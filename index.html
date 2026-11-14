@@ -110,6 +110,35 @@
     display:inline-block;
   }
   .cta-primary:hover{ background:#F2906E; }
+  /* Phone-only heads-up: installing works, but using it needs a desktop. */
+  .mobile-tip{
+    display:none;
+    margin-top: 28px;
+    padding: 16px 18px;
+    max-width: 46ch;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--clay);
+    border-radius: 3px;
+    font-size: 14.5px;
+    color: var(--ink-soft);
+  }
+  .mobile-tip.on{ display:block; }
+  .is-phone .nav-cta{ display: none; }
+  .mobile-tip strong{ display:block; margin-bottom: 8px; font-size: 15.5px; color: var(--ink); }
+  .mobile-tip p{ margin: 4px 0; }
+  .mobile-tip .tip-pc{ color: var(--ink); font-weight: 600; }
+  .mobile-tip button{
+    margin-top: 12px;
+    font: inherit;
+    font-weight: 700;
+    padding: 10px 16px;
+    border: 1px solid var(--ink);
+    border-radius: 3px;
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+  }
   .hero-note{
     font-size: 14px;
     color: var(--ink-soft);
@@ -272,6 +301,13 @@
   <div>
     <h1 data-en="Do you explain your ChatGPT conversation all over again in Claude?" data-ja="ChatGPT で話した内容を、Claude でも一から説明していませんか？" data-es="¿Vuelves a explicar en Claude lo que ya hablaste en ChatGPT?">ChatGPT에서 나눈 대화, Claude에서도 처음부터 다시 설명하시나요?</h1>
     <p class="sub" data-en="Pocket PM is a Chrome extension that turns the conversation so far into a single handoff document, so your context survives the move to another AI." data-ja="Pocket PM は、これまでの会話を 1 枚の引き継ぎ書にまとめ、別の AI に移っても文脈が途切れないようにする Chrome 拡張機能です。" data-es="Pocket PM es una extensión de Chrome que resume la conversación en un solo documento de traspaso, para que el contexto no se pierda al cambiar de IA.">Pocket PM은 지금까지의 대화를 인계서 한 장으로 정리해, 다른 AI로 넘어가도 맥락이 끊기지 않게 해주는 크롬 확장 프로그램입니다.</p>
+    <div class="mobile-tip" id="mobile-tip">
+      <strong data-en="Installing from your phone works, but it turns into a quest." data-ja="スマホからのインストールもできますが、ちょっとした冒険になります。" data-es="Instalar desde el móvil se puede, pero se convierte en una aventura.">폰에서 설치, 되긴 되는데 모험이 됩니다.</strong>
+      <p data-en="Phone route: sign in → verify → “Add to desktop” → “Added to desktop” → you still need a PC to actually use it." data-ja="スマホコース: ログイン → 認証 →「デスクトップに追加」→「デスクトップに追加しました」→ 結局、使うには PC が必要" data-es="Ruta móvil: iniciar sesión → verificar → «Añadir al escritorio» → «Añadido al escritorio» → y para usarlo igual necesitas un PC.">폰 코스: 로그인 → 인증 → ‘바탕화면에 추가’ → ‘데스크탑에 추가됨’ → 그래도 쓰려면 PC가 필요</p>
+      <p class="tip-pc" data-en="PC route: install → puzzle icon → pin Pocket PM. Done." data-ja="PC コース: インストール → パズルのアイコン → Pocket PM をピン留め。以上。" data-es="Ruta PC: instalar → icono del puzle → fijar Pocket PM. Listo.">PC 코스: 설치 → 퍼즐 아이콘 → Pocket PM 핀 고정. 끝.</p>
+      <p data-en="So do it once you are at your computer. Send yourself the link now." data-ja="なので、パソコンの前で一度に済ませるのがおすすめ。リンクは今、自分に送っておきましょう。" data-es="Así que hazlo cuando estés frente al ordenador. Envíate el enlace ahora.">그러니 PC 앞에 앉았을 때 한 번에 하세요. 링크는 지금 나에게 보내두면 됩니다.</p>
+      <button type="button" id="mobile-share" data-en="Send myself the link" data-ja="自分にリンクを送る" data-es="Enviarme el enlace">나에게 링크 보내기</button>
+    </div>
     <div class="hero-actions">
       <a class="cta-primary" href="https://chromewebstore.google.com/detail/mhknenefecbpbbkjcmnpojmobiglbehi?utm_source=item-share-cb" data-goatcounter-click="install-hero" data-en="Install from the Chrome Web Store" data-ja="Chrome ウェブストアからインストール" data-es="Instalar desde Chrome Web Store">Chrome 웹스토어에서 설치</a>
       <span class="hero-note" data-en="No API key · No Pocket PM server · Free" data-ja="API キー不要 · Pocket PM のサーバーなし · 無料" data-es="Sin clave de API · Sin servidor de Pocket PM · Gratis">API 키 없음 · Pocket PM 서버 없음 · 무료</span>
@@ -432,6 +468,80 @@
         var base = link.getAttribute("data-goatcounter-click");
         if (base) link.setAttribute("data-goatcounter-click", base + "/" + (source || "direct"));
         });
+  })();
+</script>
+
+<script>
+  // Phones can install the extension but not use it, so on a phone we say so
+  // and offer to send the link to wherever the person reads on a computer.
+  (function () {
+    var SHARE_URL = "https://hyojin-chat.github.io/pocketpm/?utm_source=insta&utm_campaign=phoneshare";
+    var params = new URLSearchParams(location.search);
+    var ua = navigator.userAgent || "";
+    var phone =
+      /Android|iPhone|iPad|iPod/i.test(ua) ||
+      (/Macintosh/i.test(ua) && navigator.maxTouchPoints > 1);
+    if (params.get("mobile") === "1") phone = true; // for testing on a computer
+
+    function count(path, title) {
+      if (window.goatcounter && window.goatcounter.count) {
+        window.goatcounter.count({ path: path, title: title, event: true });
+      }
+    }
+
+    // Arrivals through a link that someone sent themselves from a phone.
+    if (params.get("utm_campaign") === "phoneshare") {
+      window.addEventListener("load", function () {
+        count("landing-visit/phoneshare/" + (phone ? "phone" : "pc"), "폰에서 보낸 링크로 방문");
+      });
+    }
+
+    if (!phone) return;
+    var tip = document.getElementById("mobile-tip");
+    var button = document.getElementById("mobile-share");
+    if (!tip || !button) return;
+    tip.classList.add("on");
+    window.addEventListener("load", function () {
+      count("mobile-notice-seen", "폰 안내 노출");
+    });
+
+    var words = {
+      ko: { text: "PC 크롬에서 열어서 설치하세요", copied: "링크를 복사했어요", install: "그래도 폰에서 크롬에 추가해놓기" },
+      en: { text: "Open this on desktop Chrome to install it", copied: "Link copied", install: "Add to Chrome on my phone anyway" },
+      ja: { text: "パソコンの Chrome で開いてインストールしてください", copied: "リンクをコピーしました", install: "それでもスマホで Chrome に追加しておく" },
+      es: { text: "Ábrelo en Chrome de escritorio para instalarlo", copied: "Enlace copiado", install: "Añadir a Chrome en el móvil igualmente" }
+    };
+
+    // On a phone the top button is hidden, and the one below the box reads
+    // as the choice: read the box, then add it to Chrome anyway.
+    document.documentElement.classList.add("is-phone");
+    var labels = words[document.documentElement.lang] || words.en;
+    document.querySelectorAll(".cta-primary").forEach(function (el) {
+      el.textContent = labels.install;
+    });
+
+    button.addEventListener("click", function () {
+      var lang = document.documentElement.lang;
+      var say = words[lang] || words.en;
+      count("mobile-share", "폰에서 나에게 보내기");
+
+      if (navigator.share) {
+        navigator.share({ title: "Pocket PM", text: say.text, url: SHARE_URL }).catch(function () {});
+        return;
+      }
+
+      var label = button.textContent;
+      function copied() {
+        button.textContent = say.copied;
+        setTimeout(function () { button.textContent = label; }, 2500);
+      }
+      function manual() { window.prompt("", SHARE_URL); }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(SHARE_URL).then(copied, manual);
+      } else {
+        manual();
+      }
+    });
   })();
 </script>
 
